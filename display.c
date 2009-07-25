@@ -31,7 +31,7 @@ void disconnect() {
 /*
     Socket server functions
 */
-int initialize(unsigned short port) {
+int initialize_server(unsigned short port) {
     int socket_fd, new_socket_fd;
     struct sockaddr_in host_addr, client_addr;
     socklen_t sin_size;
@@ -78,7 +78,8 @@ void draw_digit(serdisp_t* dd, int x, int y, int digit, int segwidth, int thick,
 
 int main() {
     printf("Hello, world!\n");
-    connect_lcd();
+    display = connect_lcd();
+    server = initialize_server(35367);
     while (1) {
         
     }
