@@ -31,15 +31,23 @@ void disconnect() {
 /*
     Socket server functions
 */
-int initialize() {
+int initialize(unsigned short port) {
     int socket_fd, new_socket_fd;
     struct sockaddr_in host_addr, client_addr;
     socklen_t sin_size;
     int recv_length=1, yes=1;
     char buffer[1024];
     
+    host_addr.sin_family=AF_INET;
+    host_addr.sin_port=htons(port);
+    host_addr.sin_addr.s_addr=0;
+    memset(&(host_addr.sin_zero), '\0', 8);
+    
     if (((socket_fd = socket(PF_INET, SOCK_STREAM, 0)) == -1) ||
-        (setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)) return -1;
+        (setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) ||
+        (bind(socket_fd, (struct sockaddr*) &host_addr, sizeof(struct sockaddr)) == -1) ||
+        (listen(socket_fd, 5) == -1)) return -1;
+    return socket_fd;
 }
 
 /*
