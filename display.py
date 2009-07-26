@@ -2,6 +2,7 @@
 
 from ctypes import *
 import characters as chrs
+import subprocess
 #import SocketServer
 
 
@@ -89,20 +90,40 @@ class Display:
     def erase(self, x, y, update=True):
         self.draw(x, y, 0xFFFFFFFF, update)
     
-    def write(self, x=0, y=0, string=""):
+    def write(self, string="", x=0, y=0):
         """
         Writes a string on screen, starting at a given position. Currently,
         only b/w text is available, and the font size is bound to be 10px.
         """
+        def get_p(what):
+            """Gets a pattern specified in the first argument from the characters file."""
+            try:
+                return getattr(chrs, what)
+            except AttributeError:
+                return getattr(chrs, 'NONE')
+        
         special_chrs = {
-            ' ':getattr(chrs, 'SPACE'),
-            '_':getattr(chrs, 'UNDERSCORE'),
-            '-':getattr(chrs, 'DASH'),
-            '.':getattr(chrs, 'DOT'),
-            ',':getattr(chrs, 'COMMA'),
-            '!':getattr(chrs, 'EXCL_MARK'),
-            '?':getattr(chrs, 'QUES_MARK'),
-            '#':getattr(chrs, 'HASH')
+            ' ':get_p('SPACE'),
+            '_':get_p('UNDERSCORE'),
+            '-':get_p('DASH'),
+            '.':get_p('DOT'),
+            ':':get_p('COLON'),
+            ',':get_p('COMMA'),
+            ';':get_p('SEMICOLON'),
+            '!':get_p('EXCL_MARK'),
+            '?':get_p('QUES_MARK'),
+            '&':get_p('AMPERSAND'),
+            '#':get_p('HASH'),
+            '0':get_p('ZERO'),
+            '1':get_p('ONE'),
+            '2':get_p('TWO'),
+            '3':get_p('THREE'),
+            '4':get_p('FOUR'),
+            '5':get_p('FIVE'),
+            '6':get_p('SIX'),
+            '7':get_p('SEVEN'),
+            '8':get_p('EIGHT'),
+            '9':get_p('NINE')
         }
         x_offset = x
         y_offset = y
@@ -152,7 +173,30 @@ class Display:
             self.lib.serdisp_blink(self.disp, method.upper(), n, t)
     
     def test(self):
-        self.write(0, 0, "AaBbCcDd _-.,!?#")
+        self.write("AaBbCcDdEeFfGgHhIiJjKkLl\nMmNnOoPpQqRrSsTtUuVv\n0123456789 _-.,!?#")
+        self.draw_pattern(self.width/2-73, self.height/2-23, chrs.AGF_HUGE)
+
+
+def get_output(command, stdout = True, stderr = False):
+    """
+    Runs a program specified in the first argument and returns its output
+    as a string. Code borrowed from P1tr.
+    """
+    if (stdout or stderr) and not (stdout and stderr):
+        pipe = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        if stdout:
+        	return pipe.stdout.read()
+        else:
+        	return pipe.stderr.read()
+    elif stdout and stderr:
+    	return subprocess.Popen(command, shell=True, stdout=subprocess.PIPE,
+                                stderr=subprocess.STDOUT).stdout().read()
+    else:
+        try:
+            return bool(subprocess.Popen(command))
+        except OSError:
+            return "Output unavailable."
 
 
 """class DisplayServerHandler(SocketServer.StreamRequestHandler):
