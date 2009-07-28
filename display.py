@@ -12,12 +12,10 @@ class DisplayClient:
     def send(self, request):
         self.socket.send("%s\r\n" % request)
         response = self.socket.recv(1024).split('\n')
-        #if response[-1] == 'OK':
         return '\n'.join(response[:-2])
-        #else:
-        #    raise "Invalid request. If this happens while using only DisplayClient's built-in display control functions, there might be something wrong with the server."
     
     def close(self):
+        self.socket.send('clear')
         self.socket.close()
     
     def backlight(self, state=2):
@@ -69,7 +67,7 @@ class DisplayClient:
         """Erases a given pixel."""
         self.send('erase %d %d %s' % (x, y, update))
 
-    def write(self, x=0, y=0, string="", update=True):
+    def write(self, x=0, y=0, update=True, string=""):
         """
         Writes a string on screen, starting at a given position. Currently,
         only b/w text is available, and the font size is bound to be 10px.

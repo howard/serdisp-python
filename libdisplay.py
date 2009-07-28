@@ -181,7 +181,7 @@ class Display:
                         char = getattr(chrs, c)
                     self.draw_pattern(x_offset, y_offset, char, False)
                     char_width = len(char.split('\n')[0])
-                    if x_offset > self.width+10:
+                    if x_offset > self.width-15:
                         x_offset = x
                         y_offset += 10
                     else:
