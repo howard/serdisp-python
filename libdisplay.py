@@ -61,26 +61,6 @@ class Display:
         if update:
             self.update()
     
-    def draw_line(self, (start_x, start_y), (end_x, end_y), kind='solid', color='0xFF000000', update=True):
-        """
-        Draws a horizontal or vertical line on screen.
-        Arguments: (start_x, start_y), (end_x, end_y), kind='solid', color='0xFF000000', update=True
-        Available kinds: solid, dotted, dashed
-        """
-        for x in range(start_x, end_x):
-            for y in range(start_y, end_y):
-                if kind == 'solid':
-                    self.draw(x, y, color, False)
-                elif kind == 'dotted':
-                    if not (x-start_x % 2 or y-start_y % 2):
-                        self.draw(x, y, color, False)
-                elif kind == 'dashed':
-                    if not (x-start_x % 4 or y-start_y % 4):
-                        self.draw(x, y, color, False)
-                else:
-                    raise "Invalid line type: It must be either solid, dotted, or dashed."
-        self.update()
-    
     def draw_pattern(self, x_offset, y_offset, pattern="", update=True):
         """
         Draws a b/w pattern, which has to be defined like this:

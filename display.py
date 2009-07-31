@@ -43,15 +43,9 @@ class DisplayClient:
         The last argument decides whether the display is updated after setting
         the pixel or not. Default is True.
         """
-        self.send('draw %d %d 0x%X %s' % (x, y, color, update))
-
-    def draw_line(self, (start_x, start_y), (end_x, end_y), kind='solid', color='0xFF000000', update=True):
-        """
-        Draws a horizontal or vertical line on screen.
-        Arguments: (start_x, start_y), (end_x, end_y), kind='solid', color='0xFF000000', update=True
-        Available kinds: solid, dotted, dashed
-        """
-        pass
+        command = 'draw %d %d 0x%X %s' % (x, y, color, update)
+        print command
+        self.send(command)
 
     def draw_pattern(self, x_offset, y_offset, pattern="", update=True):
         """
