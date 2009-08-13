@@ -16,6 +16,7 @@ class DisplayClient:
     
     def close(self):
         self.socket.send('clear')
+        self.backlight(0)
         self.socket.close()
     
     def backlight(self, state=2):
@@ -44,7 +45,6 @@ class DisplayClient:
         the pixel or not. Default is True.
         """
         command = 'draw %d %d 0x%X %s' % (x, y, color, update)
-        print command
         self.send(command)
 
     def draw_pattern(self, x_offset, y_offset, pattern="", update=True):
@@ -55,7 +55,11 @@ class DisplayClient:
         ...wereas - is white and + is black. It's important that each line has the
         same length.
         """
-        self.send('draw_pattern %d %d %s %s' % (x_offset, y_offset, pattern, update))
+        lines = pattern.split('\n')
+        for line in lines:
+            self.send('draw_pattern %d %d %s %s' % (x_offset, y_offset, line, False))
+        if update:
+            self.update()
 
     def erase(self, x, y, update=True):
         """Erases a given pixel."""

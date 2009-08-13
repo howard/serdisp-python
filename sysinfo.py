@@ -1,3 +1,4 @@
+from characters import AGF_HUGE
 from display import DisplayClient
 from gatherer import Gatherer
 from signal import signal, SIGUSR1
